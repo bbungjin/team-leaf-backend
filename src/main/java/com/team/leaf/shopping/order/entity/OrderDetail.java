@@ -2,6 +2,7 @@ package com.team.leaf.shopping.order.entity;
 
 import com.team.leaf.shopping.product.product.entity.Product;
 import com.team.leaf.user.account.entity.AccountDetail;
+import com.team.leaf.user.account.entity.ShippingAddress;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -33,5 +34,8 @@ public class OrderDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private ShippingAddress shippingAddress;
 
 }

@@ -1,25 +1,21 @@
 package com.team.leaf.shopping.follow.dto;
 
-import com.team.leaf.user.account.entity.AccountDetail;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+import java.util.List;
+
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FollowRes {
 
-    private Long userId;
+    private List<Map<String, Object>> following;
 
-    private String nickname;
-
-    private FollowRes createFollowRes(AccountDetail accountDetail) {
-        FollowRes response = new FollowRes();
-        response.setUserId(accountDetail.getUserId());
-        response.setNickname(accountDetail.getNickname());
-
-        return response;
-    }
+    private List<Map<String, Object>> followers;
 
 }
