@@ -8,10 +8,19 @@ import lombok.Data;
 public class OAuth2LoginResponse {
 
     private boolean loginSuccess;
-    private long oauthId;
+
+    private long userId;
+
     private String email;
+
     private String name;
+
     private String birthday;
+
     private String phone;
+
+    private String accessToken;
+
+    private String refreshToken;
 
 }

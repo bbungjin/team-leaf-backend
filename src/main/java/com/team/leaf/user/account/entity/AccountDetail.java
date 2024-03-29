@@ -1,5 +1,6 @@
 package com.team.leaf.user.account.entity;
 
+import com.team.leaf.user.account.dto.common.LoginType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +41,8 @@ public class AccountDetail {
 
     private String universityName;
 
+    private String major;
+
     private String shippingAddress;
 
     private String schoolAddress;
@@ -53,6 +56,10 @@ public class AccountDetail {
     private LocalDate lastAccess;
 
     private int loginFailCount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LoginType loginType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -71,26 +78,12 @@ public class AccountDetail {
         accountDetail.phone = phone;
         accountDetail.nickname = nickname;
         accountDetail.role = AccountRole.USER;
+        accountDetail.loginType = LoginType.JWT;
         accountDetail.joinDate = LocalDate.now();
         accountDetail.userDetail = createAccountPrivacy();
         //accountDetail.lastAccess = LocalDate.now();
 
         return accountDetail;
-    }
-
-    //유저 정보 수정
-    public void updateAccount(String email, String password, String name, String nickname, String phone, String birthday, String birthyear, String universityName, String shippingAddress, String schoolAddress, String workAddress) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.nickname = nickname;
-        this.phone = phone;
-        this.birthday = birthday;
-        this.birthyear = birthyear;
-        this.universityName = universityName;
-        this.shippingAddress = shippingAddress;
-        this.schoolAddress = schoolAddress;
-        this.workAddress = workAddress;
     }
 
     public void updateAdditionalInfo(String name, String birthday, String gender, String universityName) {

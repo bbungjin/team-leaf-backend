@@ -1,8 +1,8 @@
 package com.team.leaf.user.account.oauth;
 
-import com.team.leaf.user.account.dto.request.oauth.OAuth2LoginType;
+import com.team.leaf.user.account.dto.common.LoginType;
 import com.team.leaf.user.account.dto.request.oauth.OAuth2TokenDto;
-import com.team.leaf.user.account.entity.OAuth2Account;
+import com.team.leaf.user.account.entity.AccountDetail;
 import org.springframework.http.ResponseEntity;
 
 public interface OAuth2LoginInfo {
@@ -14,18 +14,18 @@ public interface OAuth2LoginInfo {
 
     ResponseEntity<String> requestUserInfoForApp(String accessToken);
 
-    OAuth2Account getUserInfo(ResponseEntity<String> userInfoRes);
+    AccountDetail getUserInfo(ResponseEntity<String> userInfoRes);
 
 
-    default OAuth2LoginType type() {
+    default LoginType type() {
         if(this instanceof GoogleLoginInfo) {
-            return OAuth2LoginType.GOOGLE;
+            return LoginType.GOOGLE;
         } else if (this instanceof KakaoLoginInfo) {
-            return OAuth2LoginType.KAKAO;
+            return LoginType.KAKAO;
         } else if (this instanceof NaverLoginInfo) {
-            return OAuth2LoginType.NAVER;
+            return LoginType.NAVER;
         } else {
-            return null;
+            return LoginType.JWT;
         }
     }
 
