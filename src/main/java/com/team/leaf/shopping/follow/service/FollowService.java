@@ -1,6 +1,7 @@
 package com.team.leaf.shopping.follow.service;
 
 import com.team.leaf.shopping.follow.dto.FollowRequest;
+import com.team.leaf.shopping.follow.dto.FollowRes;
 import com.team.leaf.shopping.follow.entity.Follow;
 import com.team.leaf.shopping.follow.repository.FollowRepository;
 import com.team.leaf.user.account.entity.AccountDetail;
@@ -9,7 +10,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,18 +43,40 @@ public class FollowService {
         followRepository.deleteByTargetUserAndSelfUser(targetUser, accountDetail);
     }
 
-    public List<AccountDetail> getFollowingList(AccountDetail accountDetail) {
-        return followRepository.findBySelfUser_AccountId(accountDetail.getUserId())
-                .stream()
+    @Transactional
+    public FollowRes getFollow(AccountDetail account) {
+        AccountDetail accountDetail = accountRepository.findById(account.getUserId())
+                .orElseThrow(() -> new RuntimeException("not found User"));
+
+        List<Follow> following = followRepository.findBySelfUser(accountDetail);
+        List<Follow> followers = followRepository.findByTargetUser(accountDetail);
+
+        List<AccountDetail> followingList = following.stream()
                 .map(Follow::getTargetUser)
+                .collect(Collectors.toList());
+
+        List<AccountDetail> followerList = followers.stream()
+                .map(Follow::getSelfUser)
+                .collect(Collectors.toList());
+
+        FollowRes response = FollowRes.builder()
+                .following(getDetailsFromUsers(followingList))
+                .followers(getDetailsFromUsers(followerList))
+                .build();
+
+        return response;
+
+    }
+
+    private List<Map<String, Object>> getDetailsFromUsers(List<AccountDetail> users) {
+        return users.stream()
+                .map(u -> new HashMap<String, Object>() {{
+                    put("id", u.getUserId());
+                    put("email", u.getEmail());
+                    put("nickname", u.getNickname());
+                    // 필요에 따라 추가 정보 설정 가능
+                }})
                 .collect(Collectors.toList());
     }
 
-    // 팔로워 목록 조회 메서드
-    public List<AccountDetail> getFollowerList(AccountDetail accountDetail) {
-        return followRepository.findByTargetUser_AccountId(accountDetail.getUserId())
-                .stream()
-                .map(Follow::getSelfUser)
-                .collect(Collectors.toList());
-    }
 }

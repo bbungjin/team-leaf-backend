@@ -3,7 +3,7 @@ package com.team.leaf.user.account.oauth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team.leaf.user.account.dto.request.oauth.OAuth2TokenDto;
-import com.team.leaf.user.account.entity.OAuth2Account;
+import com.team.leaf.user.account.entity.AccountDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
@@ -100,14 +100,14 @@ public class KakaoLoginInfo implements OAuth2LoginInfo {
     }
 
     @Override
-    public OAuth2Account getUserInfo(ResponseEntity<String> userInfoRes) {
+    public AccountDetail getUserInfo(ResponseEntity<String> userInfoRes) {
 
         JSONObject jsonObject =
                 (JSONObject) JSONValue.parse(Objects.requireNonNull(userInfoRes.getBody()));
         JSONObject accountObject = (JSONObject) jsonObject.get("kakao_account");
 
-        return OAuth2Account.builder()
-                .oauthId((Long) jsonObject.get("id"))
+        return AccountDetail.builder()
+                //.oauthId((Long) jsonObject.get("id"))
                 .name((String) accountObject.get("name"))
                 .email((String) accountObject.get("email"))
                 .birthday((String) accountObject.get("birthday"))

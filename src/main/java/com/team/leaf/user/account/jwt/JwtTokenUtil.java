@@ -1,14 +1,11 @@
 package com.team.leaf.user.account.jwt;
 
-import com.team.leaf.user.account.dto.request.jwt.JwtLoginRequest;
 import com.team.leaf.user.account.dto.request.jwt.Platform;
 import com.team.leaf.user.account.dto.response.TokenDto;
 import com.team.leaf.user.account.entity.AccountDetail;
 import com.team.leaf.user.account.entity.AccountRole;
-import com.team.leaf.user.account.entity.OAuth2Account;
 import com.team.leaf.user.account.entity.RefreshToken;
 import com.team.leaf.user.account.repository.AccountRepository;
-import com.team.leaf.user.account.repository.OAuth2Repository;
 import com.team.leaf.user.account.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -39,8 +36,6 @@ public class JwtTokenUtil {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PrincipalDetailsService userDetailsService;
     private final AccountRepository accountRepository;
-    private final OAuth2Repository oAuth2Repository;
-    //private static final String AUTHORITIES_KEY = "auth";
     public static final String ACCESS_TOKEN = "Authorization";
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final long ACCESS_TIME = Duration.ofMinutes(30).toMillis(); // 만료시간 30분
@@ -184,13 +179,9 @@ public class JwtTokenUtil {
 
     public AccountRole getRoleFromEmail(String email) {
         AccountDetail accountDetail = accountRepository.findByEmail(email).orElse(null);
-        OAuth2Account oAuth2Account = oAuth2Repository.findByEmail(email).orElse(null);
 
-        if (accountDetail != null) {
-            return accountDetail.getRole();
-        } else if (oAuth2Account != null) {
-            return oAuth2Account.getRole();
-        }
+        if (accountDetail != null) { return accountDetail.getRole(); }
+
         throw new UsernameNotFoundException("Not found user");
 
     }

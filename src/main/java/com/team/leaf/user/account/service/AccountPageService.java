@@ -1,11 +1,9 @@
 package com.team.leaf.user.account.service;
 
-import com.team.leaf.shopping.follow.repository.FollowRepository;
 import com.team.leaf.user.account.config.SecurityConfig;
 import com.team.leaf.user.account.dto.common.ShippingAddressReq;
 import com.team.leaf.user.account.dto.common.UpdateAccountReq;
-import com.team.leaf.user.account.dto.request.jwt.Platform;
-import com.team.leaf.user.account.dto.request.jwt.PlatformRequest;
+import com.team.leaf.user.account.dto.request.jwt.GetAccountRes;
 import com.team.leaf.user.account.dto.response.ShippingAddressRes;
 import com.team.leaf.user.account.dto.response.TokenDto;
 import com.team.leaf.user.account.dto.response.UpdateAccountRes;
@@ -34,16 +32,30 @@ public class AccountPageService {
 
     private final AccountRepository accountRepository;
     private final AddressRepository addressRepository;
-    private final FollowRepository followRepository;
     private final JwtTokenUtil jwtTokenUtil;
     private final SecurityConfig securityConfig;
     private final AccountService accountService;
-    private final CommonService commonService;
     private final RedisTemplate redisTemplate;
 
     @Transactional
-    public UpdateAccountRes updateAccount(AccountDetail account, HttpServletResponse response, UpdateAccountReq accountDto) {
+    public GetAccountRes getAccount(AccountDetail account) {
+        AccountDetail accountDetail = accountRepository.findById(account.getUserId())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
+        GetAccountRes response = GetAccountRes.builder()
+                .id(accountDetail.getUserId())
+                .email(accountDetail.getEmail())
+                .name(accountDetail.getName())
+                .nickname(accountDetail.getNickname())
+                .universityName(accountDetail.getUniversityName())
+                .major(accountDetail.getMajor())
+                .build();
+
+        return response;
+    }
+
+    @Transactional
+    public UpdateAccountRes updateAccount(AccountDetail account, HttpServletResponse response, UpdateAccountReq accountDto) {
         AccountDetail accountDetail = accountRepository.findById(account.getUserId())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
@@ -69,13 +81,12 @@ public class AccountPageService {
         }
 
         if (accountDto.getNickname() != null && !accountDto.getNickname().isEmpty()) {
-            // 닉네임 중복 처리 어떻게 할지 정해지면 중복 처리 추가
             accountDetail.setNickname(accountDto.getNickname());
         }
 
         if (accountDto.getPhone() != null && !accountDto.getPhone().isEmpty()) {
-            commonService.validatePhone(accountDetail.getPhone());
-            String existingPhone = commonService.checkPhoneNumberDuplicate(accountDto.getPhone());
+            accountService.validatePhone(accountDto.getPhone());
+            String existingPhone = accountService.checkPhoneNumberDuplicate(accountDto.getPhone());
             if (!"중복된 데이터가 없습니다.".equals(existingPhone)) {
                 throw new RuntimeException(existingPhone);
             }
@@ -93,8 +104,9 @@ public class AccountPageService {
         accountRepository.save(accountDetail);
 
         if (accountDto.getEmail() != null && !accountDto.getEmail().isEmpty()) {
-            commonService.validateEmail(accountDto.getEmail());
-            String existingEmail = commonService.checkEmailDuplicate(accountDto.getEmail());
+            accountService.validateEmail(accountDto.getEmail());
+            String existingEmail = accountService.checkEmailDuplicate(accountDto.getEmail());
+
             if (!"중복된 데이터가 없습니다.".equals(existingEmail)) {
                 throw new RuntimeException(existingEmail);
             }
@@ -104,7 +116,7 @@ public class AccountPageService {
 
             redisTemplate.opsForValue().set("RT:" + accountDto.getEmail(), tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
-            commonService.setHeader(response, tokenDto);
+            accountService.setHeader(response, tokenDto);
 
             accountRepository.save(accountDetail);
 

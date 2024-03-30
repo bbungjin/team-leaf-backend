@@ -1,5 +1,6 @@
 package com.team.leaf.user.account.dto.request.oauth;
 
+import com.team.leaf.user.account.dto.common.LoginType;
 import com.team.leaf.user.account.dto.request.jwt.Platform;
 import lombok.Getter;
 
@@ -10,6 +11,6 @@ public class OAuthLoginRequest {
 
     private Platform platform;
 
-    private OAuth2LoginType type;
+    private LoginType type;
 
 }

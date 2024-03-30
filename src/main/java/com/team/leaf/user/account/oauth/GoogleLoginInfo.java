@@ -3,7 +3,7 @@ package com.team.leaf.user.account.oauth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team.leaf.user.account.dto.request.oauth.OAuth2TokenDto;
-import com.team.leaf.user.account.entity.OAuth2Account;
+import com.team.leaf.user.account.entity.AccountDetail;
 import com.team.leaf.user.account.exception.AccountException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -96,9 +96,9 @@ public class GoogleLoginInfo implements OAuth2LoginInfo {
     }
 
     @Override
-    public OAuth2Account getUserInfo(ResponseEntity<String> userInfoRes) {
+    public AccountDetail getUserInfo(ResponseEntity<String> userInfoRes) {
         try {
-            return objectMapper.readValue(userInfoRes.getBody(), OAuth2Account.class);
+            return objectMapper.readValue(userInfoRes.getBody(), AccountDetail.class);
         } catch (JsonProcessingException e) {
             log.error("Error while processing JSON: {}", e.getMessage());
             return null;
