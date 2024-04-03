@@ -45,7 +45,7 @@ public class HistoryService {
         historyRepository.save(history);
     }
     public List<History> getAllHistory(AccountDetail accountDetail) {
-        return historyRepository.findAllByAccountDetailOrderByHistoryIdDesc(accountDetail);
+        return historyRepository.findAllByAccountDetailOrderByDateDesc(accountDetail);
     }
 
     @Transactional

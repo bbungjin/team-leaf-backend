@@ -11,7 +11,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
 
     long deleteByHistoryIdAndAccountDetail(long historyId, AccountDetail accountDetail);
 
-    List<History> findAllByAccountDetailOrderByHistoryIdDesc(AccountDetail accountDetail);
+    List<History> findAllByAccountDetailOrderByDateDesc(AccountDetail accountDetail);
 
     List<History> findAllByAccountDetail(AccountDetail accountDetail);
 
