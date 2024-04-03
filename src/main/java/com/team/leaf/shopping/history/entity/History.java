@@ -41,4 +41,8 @@ public class History {
                 .build();
     }
 
+    public void updateDate() {
+        date = LocalDate.now();
+    }
+
 }

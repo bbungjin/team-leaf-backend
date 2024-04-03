@@ -5,6 +5,7 @@ import com.team.leaf.user.account.entity.AccountDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface HistoryRepository extends JpaRepository<History, Long> {
 
@@ -15,5 +16,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
     List<History> findAllByAccountDetail(AccountDetail accountDetail);
 
     long deleteAllByAccountDetail(AccountDetail accountDetail);
+
+    Optional<History> findByAccountDetailAndContent(AccountDetail accountDetail, String content);
 
 }

@@ -1,7 +1,6 @@
 package com.team.leaf.shopping.history.service;
 
 import com.team.leaf.shopping.history.dto.HistoryRequest;
-import com.team.leaf.shopping.history.dto.HistoryResponse;
 import com.team.leaf.shopping.history.entity.History;
 import com.team.leaf.shopping.history.repository.HistoryRepository;
 import com.team.leaf.user.account.entity.AccountDetail;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +23,18 @@ public class HistoryService {
     }
 
     @Transactional
-    public void addHistory(HistoryRequest request, AccountDetail accountDetail) {
+    public void addOrUpdateHistory(HistoryRequest request, AccountDetail accountDetail) {
+        Optional<History> history = historyRepository.findByAccountDetailAndContent(accountDetail, request.getContent());
+        if(history.isPresent()) {
+            history.get().updateDate();
+
+            return;
+        }
+
+        addHistory(request, accountDetail);
+    }
+
+    private void addHistory(HistoryRequest request, AccountDetail accountDetail) {
         History history = History.createHistory(request.getContent(), accountDetail);
 
         List<History> historyList = historyRepository.findAllByAccountDetail(accountDetail);
@@ -33,7 +44,6 @@ public class HistoryService {
 
         historyRepository.save(history);
     }
-
     public List<History> getAllHistory(AccountDetail accountDetail) {
         return historyRepository.findAllByAccountDetailOrderByHistoryIdDesc(accountDetail);
     }

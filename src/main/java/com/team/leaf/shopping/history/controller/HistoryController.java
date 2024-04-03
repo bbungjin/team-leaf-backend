@@ -31,8 +31,8 @@ public class HistoryController {
 
     @PostMapping
     @Operation(summary= "[ 사용자 인증 정보 필요 ] history 등록")
-    public ApiResponse addHistory(@RequestBody HistoryRequest request, @LogIn @Parameter(hidden = true) AccountDetail accountDetail) {
-        historyService.addHistory(request, accountDetail);
+    public ApiResponse addOrUpdateHistory(@RequestBody HistoryRequest request, @LogIn @Parameter(hidden = true) AccountDetail accountDetail) {
+        historyService.addOrUpdateHistory(request, accountDetail);
 
         return new ApiResponse(ApiResponseStatus.SUCCESS);
     }
