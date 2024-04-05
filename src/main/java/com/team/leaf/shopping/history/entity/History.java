@@ -9,9 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.junit.Ignore;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -30,7 +28,7 @@ public class History {
 
     @CreationTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy.MM.dd." , timezone = "Asia/Seoul")
-    private LocalDate date;
+    private LocalDateTime date;
 
     private String content;
 
@@ -39,6 +37,10 @@ public class History {
                 .accountDetail(accountDetail)
                 .content(content)
                 .build();
+    }
+
+    public void updateDate() {
+        date = LocalDateTime.now();
     }
 
 }
