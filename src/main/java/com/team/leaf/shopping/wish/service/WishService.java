@@ -23,6 +23,7 @@ public class WishService {
             for(Wish wish : wishes){
                 Product product = wish.getProduct();
                 WishResponse wishResponse = WishResponse.builder()
+                        .productId(product.getProductId())
                         .title(product.getTitle())
                         .price(product.getPrice())
                         .image(product.getImage())

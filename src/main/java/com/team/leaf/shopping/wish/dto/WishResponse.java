@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WishResponse {
+
+    private long productId;
+
     private String title;
 
     private int price;
